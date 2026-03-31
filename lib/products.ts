@@ -84,3 +84,16 @@ export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
   if (error) { console.error(error.message); return [] }
   return data ?? []
 }
+
+export async function getRelatedProducts(product: Product, limit = 4): Promise<Product[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, category:categories(*)')
+    .eq('category_id', product.category_id)
+    .eq('is_active', true)
+    .neq('id', product.id)
+    .limit(limit)
+  if (error) { console.error(error.message); return [] }
+  return data ?? []
+}
