@@ -194,6 +194,32 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Digitale Breaks section */}
+      <section className="container-px max-w-7xl mx-auto pb-20">
+        <div className="relative rounded-2xl overflow-hidden bg-neutral-950 border border-neutral-800">
+          <div className="absolute inset-0 bg-gradient-to-r from-brand/10 to-transparent" />
+          <div className="relative flex flex-wrap items-center justify-between gap-6 p-10">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-3xl">🎴</span>
+                <span className="bg-brand text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded">Nieuw</span>
+              </div>
+              <h2 className="text-white font-black text-3xl tracking-tighter mb-2">Digitale Breaks</h2>
+              <p className="text-white/40 text-sm max-w-sm">Kies een tier, open 3 packs live op je scherm. Geen wachttijd, direct resultaat.</p>
+              <div className="flex gap-3 mt-4">
+                {["€15", "€45", "€90"].map(p => (
+                  <span key={p} className="border border-white/20 text-white/60 text-xs font-bold px-3 py-1.5 rounded-lg">{p}</span>
+                ))}
+              </div>
+            </div>
+            <Link href="/breaks"
+              className="bg-white text-neutral-900 font-black text-xs uppercase tracking-widest px-8 py-4 rounded hover:bg-brand hover:text-white transition-colors whitespace-nowrap">
+              Start een break →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Trust */}
       <section className="bg-neutral-950 border-t border-neutral-800">
         <div className="container-px max-w-7xl mx-auto py-14 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
