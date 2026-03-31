@@ -77,14 +77,24 @@ function BreaksContent() {
   const [allCards, setAllCards] = useState<Card[]>([]);
   const [paying, setPaying] = useState(false);
 
-  // Stripe'dan dönen paid=true parametresini yakala
+  // Stripe'dan dönen session_id'yi verify et
   useEffect(() => {
-    const tierId = searchParams.get("tier");
-    const paid   = searchParams.get("paid");
-    if (tierId && paid === "true") {
-      const t = TIERS.find(t => t.id === tierId);
-      if (t) { setTier(t); setPhase("packs"); }
-    }
+    const sessionId = searchParams.get("session_id");
+    if (!sessionId) return;
+    fetch("/api/breaks-verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId }),
+    })
+      .then(r => r.json())
+      .then(({ valid, tierId }) => {
+        if (valid) {
+          const t = TIERS.find(t => t.id === tierId);
+          if (t) { setTier(t); setPhase("packs"); }
+        } else {
+          alert("Betaling niet bevestigd. Probeer opnieuw.");
+        }
+      });
   }, [searchParams]);
 
   const handlePay = async (t: typeof TIERS[0]) => {
