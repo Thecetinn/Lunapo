@@ -8,8 +8,9 @@ export async function generateStaticParams() {
   return CATEGORIES.map((c) => ({ slug: c.slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const cat = getCategoryBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const cat = getCategoryBySlug(slug);
   if (!cat) return {};
   return {
     title: `${cat.name} kopen`,
@@ -17,10 +18,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
-  const cat = getCategoryBySlug(params.slug);
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const cat = getCategoryBySlug(slug);
   if (!cat) notFound();
-  const products = getProductsByCategory(params.slug);
+  const products = getProductsByCategory(slug);
 
   return (
     <>
@@ -36,7 +38,6 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
           <p className="text-white/50 text-sm mt-1">{products.length} producten</p>
         </div>
       </div>
-
       <div className="container-px max-w-7xl mx-auto py-12">
         {products.length === 0
           ? <p className="text-neutral-400 text-center py-20">Geen producten gevonden.</p>
@@ -47,7 +48,7 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
         <div className="mt-16 pt-12 border-t border-neutral-100">
           <p className="text-sm font-bold text-neutral-500 mb-4">Bekijk ook:</p>
           <div className="flex gap-2 flex-wrap">
-            {CATEGORIES.filter((c) => c.slug !== params.slug).map((c) => (
+            {CATEGORIES.filter((c) => c.slug !== slug).map((c) => (
               <Link key={c.slug} href={`/category/${c.slug}`}
                 className="text-sm border border-neutral-200 rounded-full px-4 py-1.5 hover:border-brand hover:text-brand transition-colors">
                 {c.name}
