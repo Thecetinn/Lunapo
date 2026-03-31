@@ -1,49 +1,30 @@
 "use client";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const RED = "#C8102E";
 const DARK = "#0a0a0a";
 
-export default function RegisterPage() {
-  const [name, setName] = useState("");
+export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [done, setDone] = useState(false);
+  const router = useRouter();
   const supabase = createClient();
 
-  const handleRegister = async () => {
+  const handleLogin = async () => {
     setLoading(true); setError("");
-    const { error } = await supabase.auth.signUp({
-      email, password: pass,
-      options: { data: { full_name: name }, emailRedirectTo: `${window.location.origin}/account` }
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
     if (error) { setError(error.message); setLoading(false); return; }
-    setDone(true);
+    router.push("/account");
   };
 
   const handleGoogle = async () => {
-    const supabase = createClient();
     await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/account` } });
   };
-
-  if (done) return (
-    <div style={{ minHeight: "100vh", background: "#f9fafb", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
-      <div style={{ background: "#fff", borderRadius: "16px", border: "1px solid #e5e7eb", padding: "40px 28px", maxWidth: "420px", width: "100%", textAlign: "center" }}>
-        <div style={{ width: "64px", height: "64px", background: "#f0fdf4", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "28px" }}>✓</div>
-        <h2 style={{ fontWeight: 900, fontSize: "22px", margin: "0 0 8px", color: DARK }}>Check je e-mail!</h2>
-        <p style={{ fontSize: "13px", color: "#6b7280", lineHeight: 1.7, margin: "0 0 24px" }}>
-          We hebben een bevestigingslink gestuurd naar <strong>{email}</strong>. Klik op de link om je account te activeren.
-        </p>
-        <Link href="/login" style={{ background: DARK, color: "#fff", padding: "12px 24px", borderRadius: "10px", fontWeight: 700, fontSize: "13px", textDecoration: "none", display: "inline-block" }}>
-          Terug naar inloggen
-        </Link>
-      </div>
-    </div>
-  );
 
   return (
     <div style={{ minHeight: "100vh", background: "#f9fafb", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", fontFamily: "system-ui, sans-serif" }}>
@@ -57,28 +38,30 @@ export default function RegisterPage() {
 
         <div style={{ background: "#fff", borderRadius: "16px", border: "1px solid #e5e7eb", padding: "32px 28px" }}>
           <div style={{ display: "flex", background: "#f3f4f6", borderRadius: "10px", padding: "4px", marginBottom: "28px" }}>
-            <Link href="/login" style={{ flex: 1, padding: "8px", textAlign: "center", fontSize: "13px", fontWeight: 700, color: "#6b7280", textDecoration: "none" }}>Inloggen</Link>
-            <div style={{ flex: 1, padding: "8px", borderRadius: "7px", background: "#fff", textAlign: "center", fontSize: "13px", fontWeight: 700, color: DARK, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>Registreren</div>
+            <div style={{ flex: 1, padding: "8px", borderRadius: "7px", background: "#fff", textAlign: "center", fontSize: "13px", fontWeight: 700, color: DARK, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>Inloggen</div>
+            <Link href="/register" style={{ flex: 1, padding: "8px", textAlign: "center", fontSize: "13px", fontWeight: 700, color: "#6b7280", textDecoration: "none" }}>Registreren</Link>
           </div>
 
-          <h2 style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", margin: "0 0 4px", color: DARK }}>Account aanmaken</h2>
-          <p style={{ fontSize: "13px", color: "#6b7280", margin: "0 0 24px" }}>Word lid van de Lunapo community</p>
+          <h2 style={{ fontWeight: 900, fontSize: "22px", letterSpacing: "-0.5px", margin: "0 0 4px", color: DARK }}>Welkom terug</h2>
+          <p style={{ fontSize: "13px", color: "#6b7280", margin: "0 0 24px" }}>Log in op je Lunapo account</p>
 
           {error && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "8px", padding: "10px 14px", fontSize: "13px", color: "#dc2626", marginBottom: "16px" }}>{error}</div>}
 
-          {[["Volledige naam", "text", name, setName, "Jan de Vries"],
-            ["E-mailadres", "email", email, setEmail, "jij@email.com"],
-            ["Wachtwoord", "password", pass, setPass, "Minimaal 6 tekens"]].map(([label, type, val, setter, ph]) => (
-            <div key={label} style={{ marginBottom: "14px" }}>
-              <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#374151", marginBottom: "6px" }}>{label}</label>
-              <input type={type} value={val} onChange={e => setter(e.target.value)} placeholder={ph}
-                style={{ width: "100%", padding: "11px 14px", border: "1.5px solid #e5e7eb", borderRadius: "10px", fontSize: "14px", outline: "none", boxSizing: "border-box" }} />
-            </div>
-          ))}
+          <div style={{ marginBottom: "14px" }}>
+            <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#374151", marginBottom: "6px" }}>E-mailadres</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="jij@email.com"
+              style={{ width: "100%", padding: "11px 14px", border: "1.5px solid #e5e7eb", borderRadius: "10px", fontSize: "14px", outline: "none", boxSizing: "border-box" }} />
+          </div>
 
-          <button onClick={handleRegister} disabled={loading}
-            style={{ width: "100%", background: DARK, color: "#fff", border: "none", padding: "13px", borderRadius: "10px", fontWeight: 800, fontSize: "14px", cursor: "pointer", marginBottom: "16px", marginTop: "6px" }}>
-            {loading ? "Account aanmaken…" : "Account aanmaken"}
+          <div style={{ marginBottom: "20px" }}>
+            <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#374151", marginBottom: "6px" }}>Wachtwoord</label>
+            <input type="password" value={pass} onChange={e => setPass(e.target.value)} placeholder="••••••••"
+              style={{ width: "100%", padding: "11px 14px", border: "1.5px solid #e5e7eb", borderRadius: "10px", fontSize: "14px", outline: "none", boxSizing: "border-box" }} />
+          </div>
+
+          <button onClick={handleLogin} disabled={loading}
+            style={{ width: "100%", background: DARK, color: "#fff", border: "none", padding: "13px", borderRadius: "10px", fontWeight: 800, fontSize: "14px", cursor: "pointer", marginBottom: "16px" }}>
+            {loading ? "Inloggen…" : "Inloggen"}
           </button>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
