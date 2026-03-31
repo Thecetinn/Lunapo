@@ -19,7 +19,7 @@ export default function RegisterPage() {
     setLoading(true); setError("");
     const { error } = await supabase.auth.signUp({
       email, password: pass,
-      options: { data: { full_name: name }, emailRedirectTo: `${window.location.origin}/account` }
+      options: { data: { full_name: name }, emailRedirectTo: `https://lunapo.vercel.app/account` }
     });
     if (error) { setError(error.message); setLoading(false); return; }
     setDone(true);
