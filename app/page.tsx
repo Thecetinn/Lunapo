@@ -1,39 +1,64 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 import { CATEGORIES, getFeaturedProducts, getProductsByCategory } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
 
-export const metadata = {
-  title: "Lunapo | Premium Collectibles NL & DE",
-  description: "Premium voetbalkaarten, Pokémon TCG, One Piece TCG, figuren en diecast. Gratis verzending v.a. €50.",
-};
-
 const TRUST = [["🚚","Gratis verzending","Vanaf €50 in NL & DE"],["↩","30 dagen retour","Zorgeloos"],["🔒","Veilig betalen","Stripe & iDEAL"],["📦","Toploader verpakt","Altijd veilig"],["⭐","4.9/5 beoordeeld","500+ klanten"]];
+
+const SLIDES = [
+  { bg:"https://images.unsplash.com/photo-1551958219-acbc595bfd2b?w=1600&q=80", badge:"Partner", title:"Mythos", highlight:"Cards", subtitle:"Officiële partner van Lunapo — premium kaarten direct van de bron.", cta:{ label:"Bekijk collectie", href:"/category/soccer-cards" } },
+  { bg:"https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1600&q=80", badge:"Officieel", title:"Topps", highlight:"Collectibles", subtitle:"Chrome, Gold Label & Match Attax — nu verkrijgbaar bij Lunapo.", cta:{ label:"Shop Topps", href:"/category/single-card" } },
+  { bg:"https://images.unsplash.com/photo-1613771404784-3a5686aa2be3?w=1600&q=80", badge:"TCG", title:"Pokémon", highlight:"Trading Cards", subtitle:"Scarlet & Violet, Obsidian Flames — de nieuwste sets op voorraad.", cta:{ label:"Shop Pokémon", href:"/category/pokemon" } },
+  { bg:"https://images.unsplash.com/photo-1584592487914-a29c64f25887?w=1600&q=80", badge:"Premium", title:"Elite", highlight:"Collectibles", subtitle:"Zeldzame kaarten, topstaat. Elke aankoop veilig verpakt in toploader.", cta:{ label:"Ontdek meer", href:"/category/single-card" } },
+];
+
+function HeroSlider() {
+  const [cur, setCur] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setCur(i => (i + 1) % SLIDES.length), 5000);
+    return () => clearInterval(t);
+  }, []);
+  const s = SLIDES[cur];
+  return (
+    <section className="relative min-h-[88vh] bg-neutral-950 flex items-end overflow-hidden">
+      {SLIDES.map((slide, i) => (
+        <div key={i} className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+          style={{ backgroundImage:`url('${slide.bg}')`, opacity: i === cur ? 0.3 : 0 }} />
+      ))}
+      <div className="relative container-px max-w-7xl mx-auto py-20 md:py-28 w-full">
+        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-6">
+          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+          <span className="text-xs text-white/75 font-semibold tracking-widest uppercase">{s.badge}</span>
+        </div>
+        <h1 className="text-white font-black text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter mb-6 max-w-2xl">
+          {s.title} <span className="text-brand">{s.highlight}</span>
+        </h1>
+        <p className="text-white/60 text-base max-w-md leading-relaxed mb-8">{s.subtitle}</p>
+        <div className="flex gap-3 flex-wrap items-center">
+          <Link href={s.cta.href} className="bg-white text-neutral-900 font-black text-sm uppercase tracking-widest px-8 py-4 rounded hover:bg-brand hover:text-white transition-colors">
+            {s.cta.label}
+          </Link>
+          <Link href="/category/pokemon" className="border border-white/30 text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded hover:bg-white/10 transition-colors">Pokémon TCG →</Link>
+          <div className="flex gap-2 ml-2">
+            {SLIDES.map((_, i) => (
+              <button key={i} onClick={() => setCur(i)}
+                className={`h-2 rounded-full transition-all duration-300 ${i === cur ? "bg-white w-6" : "bg-white/30 w-2"}`} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function HomePage() {
   const featured = getFeaturedProducts(4);
   const pokemon = getProductsByCategory("pokemon").slice(0, 4);
   return (
     <>
-      <section className="relative min-h-[88vh] bg-neutral-950 flex items-end overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{backgroundImage:"url('https://images.unsplash.com/photo-1551958219-acbc595bfd2b?w=1600&q=80')"}}/>
-        <div className="relative container-px max-w-7xl mx-auto py-20 md:py-28">
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-6">
-            <span className="w-2 h-2 bg-green-400 rounded-full"/>
-            <span className="text-xs text-white/75 font-semibold tracking-widest uppercase">Collectie 2025 — Nieuw binnen</span>
-          </div>
-          <h1 className="text-white font-black text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter mb-6 max-w-2xl">
-            Jouw collectie. <span className="text-brand">Jouw regels.</span>
-          </h1>
-          <p className="text-white/60 text-base max-w-md leading-relaxed mb-8">
-            Premium voetbalkaarten, Pokémon, One Piece TCG, figuren en diecast. Bezorging in heel NL & DE.
-          </p>
-          <div className="flex gap-3 flex-wrap">
-            <Link href="/category/soccer-cards" className="bg-white text-neutral-900 font-black text-sm uppercase tracking-widest px-8 py-4 rounded hover:bg-brand hover:text-white transition-colors">Shop collectie</Link>
-            <Link href="/category/pokemon" className="border border-white/30 text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded hover:bg-white/10 transition-colors">Pokémon TCG →</Link>
-          </div>
-        </div>
-      </section>
+      <HeroSlider />
 
       <section className="container-px max-w-7xl mx-auto py-20">
         <p className="text-xs font-bold tracking-widest uppercase text-neutral-400 mb-2">Shop per categorie</p>
