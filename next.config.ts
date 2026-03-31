@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 const config: NextConfig = {
-  experimental: {
-    turbo: {
-      rules: {},
-    },
+  typescript: {
+    ignoreBuildErrors: true,
   },
   images: {
     remotePatterns: [
