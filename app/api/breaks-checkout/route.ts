@@ -4,11 +4,6 @@ import { createClient } from "@supabase/supabase-js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 const TIERS: Record<string, { label: string; price: number }> = {
   "15": { label: "Starter Break",  price: 1500 },
   "45": { label: "Premium Break",  price: 4500 },
@@ -40,11 +35,18 @@ export async function POST(req: NextRequest) {
     cancel_url:  `${siteUrl}/breaks`,
   });
 
-  await supabase.from("break_sessions").insert({
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { error } = await supabase.from("break_sessions").insert({
     stripe_session_id: session.id,
     tier_id: tierId,
     status: "pending",
   });
+
+  if (error) console.error("Supabase insert error:", error.message);
 
   return NextResponse.json({ url: session.url });
 }
