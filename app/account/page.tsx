@@ -8,7 +8,7 @@ const RED = "#C8102E";
 const DARK = "#0a0a0a";
 
 export default function AccountPage() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();
@@ -36,7 +36,6 @@ export default function AccountPage() {
     <div style={{ maxWidth: "640px", margin: "0 auto", padding: "40px 20px", fontFamily: "system-ui, sans-serif" }}>
       <h1 style={{ fontWeight: 900, fontSize: "28px", letterSpacing: "-0.8px", margin: "0 0 4px", color: DARK }}>Mijn account</h1>
       <p style={{ fontSize: "13px", color: "#6b7280", margin: "0 0 32px" }}>Welkom terug, {user?.user_metadata?.full_name || user?.email}</p>
-
       <div style={{ background: "#fff", borderRadius: "14px", border: "1px solid #e5e7eb", padding: "24px", marginBottom: "16px" }}>
         <p style={{ fontSize: "11px", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 14px" }}>Accountgegevens</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -54,12 +53,10 @@ export default function AccountPage() {
           </div>
         </div>
       </div>
-
       <div style={{ background: "#fff", borderRadius: "14px", border: "1px solid #e5e7eb", padding: "24px", marginBottom: "24px" }}>
         <p style={{ fontSize: "11px", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 14px" }}>Bestellingen</p>
         <p style={{ fontSize: "13px", color: "#9ca3af", textAlign: "center", padding: "20px 0" }}>Nog geen bestellingen</p>
       </div>
-
       <div style={{ display: "flex", gap: "10px" }}>
         <Link href="/" style={{ flex: 1, background: DARK, color: "#fff", padding: "12px", borderRadius: "10px", fontWeight: 700, fontSize: "13px", textDecoration: "none", textAlign: "center" }}>
           Naar de shop
