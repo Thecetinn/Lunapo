@@ -43,12 +43,7 @@ export default function ProductCard({ product: p }: { product: Product }) {
         )}
       </div>
       <p className="text-[11px] text-neutral-400 font-semibold mb-0.5">{p.brand}</p>
-      <p className="font-semibold text-sm leading-snug text-neutral-900 mb-1.5 line-clamp-2">{p.name}</p>
-      <div className="flex items-center gap-1.5 mb-2">
-        <span className="text-amber-400 text-xs">{"★".repeat(Math.floor(p.rating))}</span>
-        <span className="font-bold text-xs">{p.rating}</span>
-        <span className="text-xs text-neutral-400">({p.reviewCount})</span>
-      </div>
+      <p className="font-semibold text-sm leading-snug text-neutral-900 mb-2 line-clamp-2">{p.name}</p>
       <div className="flex items-center justify-between">
         <div className="flex items-baseline gap-1.5">
           <span className="font-black text-base">€{p.price.toFixed(2)}</span>
