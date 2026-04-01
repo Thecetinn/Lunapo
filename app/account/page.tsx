@@ -1,4 +1,6 @@
 "use client";
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -19,13 +21,10 @@ export default function AccountPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push("/login"); return; }
       setUser(user);
-
       const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
       setProfile(profile);
-
       const { data: orders } = await supabase.from("orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
       setOrders(orders || []);
-
       setLoading(false);
     };
     load();
@@ -44,8 +43,6 @@ export default function AccountPage() {
 
   return (
     <div style={{ maxWidth: "720px", margin: "0 auto", padding: "40px 20px", fontFamily: "system-ui, sans-serif" }}>
-      
-      {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "32px" }}>
         <div>
           <h1 style={{ fontWeight: 900, fontSize: "28px", letterSpacing: "-0.8px", margin: "0 0 4px", color: DARK }}>Mijn account</h1>
@@ -56,7 +53,6 @@ export default function AccountPage() {
         </Link>
       </div>
 
-      {/* Accountgegevens */}
       <div style={{ background: "#fff", borderRadius: "14px", border: "1px solid #e5e7eb", padding: "24px", marginBottom: "16px" }}>
         <p style={{ fontSize: "11px", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 16px" }}>Accountgegevens</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -87,7 +83,6 @@ export default function AccountPage() {
         </div>
       </div>
 
-      {/* Bestellingen */}
       <div style={{ background: "#fff", borderRadius: "14px", border: "1px solid #e5e7eb", padding: "24px", marginBottom: "24px" }}>
         <p style={{ fontSize: "11px", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 16px" }}>
           Bestellingen ({orders.length})
@@ -118,7 +113,6 @@ export default function AccountPage() {
         )}
       </div>
 
-      {/* Buttons */}
       <div style={{ display: "flex", gap: "10px" }}>
         <Link href="/" style={{ flex: 1, background: DARK, color: "#fff", padding: "12px", borderRadius: "10px", fontWeight: 700, fontSize: "13px", textDecoration: "none", textAlign: "center" }}>
           Naar de shop
