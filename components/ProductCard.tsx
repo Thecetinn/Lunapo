@@ -18,6 +18,9 @@ export default function ProductCard({ product: p }: { product: Product }) {
   const [added, setAdded] = useState(false);
   const disc = p.comparePrice ? Math.round((1 - p.price / p.comparePrice) * 100) : 0;
 
+  // Supabase'den gelen image_url veya hardcoded images array'ini destekle
+  const img = p.image_url ?? p.images?.[0] ?? null;
+
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     addItem(p);
@@ -28,15 +31,21 @@ export default function ProductCard({ product: p }: { product: Product }) {
   return (
     <Link href={`/product/${p.slug}`} className="group block">
       <div className="relative aspect-square rounded-xl overflow-hidden bg-neutral-100 mb-3">
-        <Image src={p.images[0]} alt={p.name} fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width:768px) 50vw, 25vw" />
+        {img ? (
+          <Image src={img} alt={p.name} fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width:768px) 50vw, 25vw" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-neutral-300 text-sm">
+            Geen afbeelding
+          </div>
+        )}
         {p.badge && (
           <span className={`absolute top-2.5 left-2.5 text-[10px] font-black tracking-widest uppercase px-2.5 py-1 rounded ${BADGE[p.badge] || "bg-neutral-900 text-white"}`}>
             {p.badge}
           </span>
         )}
-        {p.stock <= 5 && (
+        {p.stock <= 5 && p.stock > 0 && (
           <span className="absolute top-2.5 right-2.5 bg-amber-50 text-amber-700 text-[10px] font-bold px-2 py-1 rounded">
             Nog {p.stock}
           </span>
