@@ -28,11 +28,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  const [cat, products, allCategories] = await Promise.all([
+  const [cat, allProducts, allCategories] = await Promise.all([
     getCategoryBySlugAsync(slug),
     getProductsByCategoryAsync(slug),
     getAllCategories(),
   ]);
+
+  const products = allProducts.slice(0, 12);
 
   if (!cat) notFound();
 
@@ -55,7 +57,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       <div className="container-px max-w-7xl mx-auto py-12">
         {products.length === 0
           ? <p className="text-neutral-400 text-center py-20">Geen producten gevonden.</p>
-          : <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          :           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
               {products.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
         }
