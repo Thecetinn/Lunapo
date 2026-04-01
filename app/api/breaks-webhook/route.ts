@@ -4,11 +4,6 @@ import { createClient } from "@supabase/supabase-js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const sig  = req.headers.get("stripe-signature")!;
@@ -26,6 +21,10 @@ export async function POST(req: NextRequest) {
     const tierId  = session.metadata?.tier_id;
 
     if (tierId) {
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
       await supabase.from("break_sessions").update({ status: "paid" })
         .eq("stripe_session_id", session.id);
     }
