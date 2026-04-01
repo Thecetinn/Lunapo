@@ -7,8 +7,12 @@ import ProductCard from "@/components/ProductCard";
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const categories = await getAllCategories();
-  return categories.map((c) => ({ slug: c.slug }));
+  try {
+    const categories = await getAllCategories();
+    return categories.map((c) => ({ slug: c.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
